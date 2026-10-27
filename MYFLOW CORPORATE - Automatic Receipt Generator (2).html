@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MYFLOW CORPORATE - Struk Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Engine Export Gambar Ultra Presisi (html-to-image) menggantikan html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    <!-- Font Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Container Struk Presisi Portrait */
+        .receipt-card {
+            width: 420px;
+            box-shadow: 0 20px 35px -10px rgba(109, 40, 217, 0.15), 0 0 10px rgba(0, 0, 0, 0.02);
+            border-radius: 24px;
+            background-color: #ffffff;
+            overflow: hidden;
+            box-sizing: border-box;
+            word-break: break-word;
+        }
+
+        /* Gradient Header */
+        .header-bg {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #8b5cf6 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-bg::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -30px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+
+        .dashed-line {
+            border-top: 2px dashed #e2e8f0;
+            margin: 16px 0;
+            width: 100%;
+        }
+
+        /* Anti-clumping font safety */
+        .receipt-card * {
+            letter-spacing: normal !important;
+            word-spacing: normal !important;
+        }
+
+        /* Toast animation */
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased pb-12">
+
+    <!-- Header App -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-700 to-brand-500 flex items-center justify-center text-white font-black text-lg shadow-md shadow-brand-500/20">
+                    M
+                </div>
+                <div>
+                    <h1 class="font-black text-slate-900 tracking-tight text-lg">MYFLOW <span class="text-brand-600">CORPORATE</span></h1>
+                    <p class="text-xs text-slate-500 font-medium">Auto Receipt Generator · Perfect Pixel Render</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Anti-Overlap Engine Active
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- PANEL KIRI: Input & Pengaturan (Col 5) -->
+            <div class="lg:col-span-5 space-y-5">
+                
+                <!-- Box Copy-Paste Utama -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label for="rawText" class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-paste text-brand-600"></i> Tempel Teks Pesanan Di Sini
+                        </label>
+                        <button id="btnPasteSample" class="text-xs text-brand-600 hover:text-brand-800 font-semibold hover:underline">
+                            Coba Teks Contoh
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Cukup *copy-paste* teks detail pesanan transaksi. Sistem akan otomatis mendeteksi semua detail & mengubah angka pesanan menjadi unit **Followers**.
+                    </p>
+
+                    <textarea id="rawText" rows="8" 
+                        class="w-full p-3.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition resize-y leading-relaxed text-slate-700"
+                        placeholder="Tempel teks di sini...&#10;&#10;Detail Pesanan #5742841&#10;ID Pesanan&#10;#5742841&#10;Dibuat&#10;26 Oktober 2026 19:43:41&#10;Layanan&#10;Whatsapp Channel Member...&#10;Target&#10;https://whatsapp.com/channel/...&#10;Jumlah Pesan&#10;700"></textarea>
+
+                    <div class="flex items-center gap-2 pt-1">
+                        <button id="btnProcess" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 px-4 rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-brand-600/20 active:scale-[0.98]">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Process & Update
+                        </button>
+                        <button id="btnClear" class="px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold transition" title="Bersihkan">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Accordion Edit Manual Quick Adjustment -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <button id="toggleEdit" class="w-full p-4 text-left font-bold text-slate-800 text-sm flex items-center justify-between bg-slate-50/50 hover:bg-slate-100/50 transition">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-brand-600"></i> Edit Detail Struk Manual
+                        </span>
+                        <i id="editChevron" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                    </button>
+
+                    <div id="editForm" class="p-4 space-y-3.5 border-t border-slate-100 hidden">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">ID Pesanan</label>
+                            <input type="text" id="inputOrderId" class="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-1 focus:ring-brand-500 outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal & Waktu</label>
+                            <input type="text" id="inputDate" class="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-1 focus:ring-brand-500 outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Jumlah Followers</label>
+                            <input type="text" id="inputQuantity" class="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-1 focus:ring-brand-500 outline-none font-bold text-brand-700">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Layanan</label>
+                            <textarea id="inputService" rows="2" class="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-1 focus:ring-brand-500 outline-none resize-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Target Link/URL</label>
+                            <input type="text" id="inputTarget" class="w-full text-xs p-2.5 border border-slate-200 rounded-lg focus:ring-1 focus:ring-brand-500 outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Jumlah Awal</label>
+                                <input type="text" id="inputStart" value="0" class="w-full text-xs p-2 border border-slate-200 rounded-lg outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Sisa</label>
+                                <input type="text" id="inputRemains" value="0" class="w-full text-xs p-2 border border-slate-200 rounded-lg outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-500 mb-1">Status</label>
+                                <input type="text" id="inputStatus" value="Success" class="w-full text-xs p-2 border border-slate-200 rounded-lg outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Garansi Hasil Download -->
+                <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 space-y-1.5">
+                    <p class="font-bold flex items-center gap-1.5 text-emerald-800">
+                        <i class="fa-solid fa-shield-halved text-emerald-600"></i> Garansi Download Rapi Perfect
+                    </p>
+                    <p class="text-emerald-700 leading-relaxed">
+                        Menggunakan teknologi engine SVG snapshot terkini. Hasil unduhan PNG dijamin **100% sama persis** dengan tampilan preview, huruf tidak dempet/tumpuk, spasi rapi, dan tajam (HD).
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- PANEL KANAN: Live Preview Struk Portrait (Col 7) -->
+            <div class="lg:col-span-7 flex flex-col items-center">
+                
+                <div class="w-full flex items-center justify-between mb-4 max-w-[420px]">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                        <i class="fa-solid fa-eye text-brand-600"></i> Live Preview Struk
+                    </span>
+                    <button id="btnDownload" class="bg-brand-600 hover:bg-brand-700 text-white text-xs px-4 py-2.5 rounded-xl font-bold transition flex items-center gap-2 shadow-md shadow-brand-600/20 active:scale-95">
+                        <i class="fa-solid fa-download"></i> Download Struk (PNG)
+                    </button>
+                </div>
+
+                <!-- AREA STRUK YANG DILUKIS & DIDOWNLOAD -->
+                <div class="receipt-card border border-slate-200" id="receiptContainer">
+                    
+                    <!-- Header Ungu Gradient Elegant -->
+                    <div class="header-bg p-6 text-white">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-purple-200">
+                                MYFLOW CORPORATE
+                            </span>
+                            <span class="text-[11px] bg-white/20 px-3 py-1 rounded-full font-medium text-white border border-white/20 inline-block">
+                                Official Receipt
+                            </span>
+                        </div>
+                        <h2 class="text-2xl font-black leading-tight mb-1 text-white">
+                            ORDER RECEIPT
+                        </h2>
+                        <p class="text-xs text-purple-100 font-normal">
+                            Rincian transaksi · Simpan sebagai bukti pesanan
+                        </p>
+                    </div>
+
+                    <!-- Body Struk -->
+                    <div class="p-6 bg-white space-y-4">
+                        
+                        <!-- Order ID & Tanggal (Tabel Rapi Anti Tumpuk) -->
+                        <div class="flex justify-between items-start text-xs pt-1">
+                            <div class="w-1/2 pr-2">
+                                <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">ORDER ID</span>
+                                <span id="dispOrderId" class="font-bold text-slate-900 text-sm font-mono block">#5742841</span>
+                            </div>
+                            <div class="w-1/2 pl-2 text-right">
+                                <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">TANGGAL</span>
+                                <span id="dispDate" class="font-medium text-slate-700 text-xs block leading-tight">26 Oktober 2026 19:43:41</span>
+                            </div>
+                        </div>
+
+                        <div class="dashed-line"></div>
+
+                        <!-- TOTAL FOLLOWERS HIGHLIGHT BOX -->
+                        <div class="bg-gradient-to-br from-brand-50 to-purple-50 p-4 rounded-2xl border border-brand-100 text-left">
+                            <span class="block text-[10px] uppercase font-bold text-brand-600 mb-1.5">
+                                TOTAL FOLLOWERS TERKONFIRMASI
+                            </span>
+                            <div class="flex items-baseline gap-2">
+                                <span id="dispQuantity" class="text-3xl font-extrabold text-brand-700 leading-none">
+                                    700
+                                </span>
+                                <span class="text-sm font-bold text-brand-600 uppercase">
+                                    FOLLOWERS
+                                </span>
+                            </div>
+                            <span class="block text-[10px] text-slate-400 mt-2 leading-tight">
+                                Jumlah follower resmi tercatat di sistem
+                            </span>
+                        </div>
+
+                        <div class="dashed-line"></div>
+
+                        <!-- RINCIAN DETAIL STRUCTURAL -->
+                        <div class="space-y-4 text-xs pt-1">
+                            
+                            <!-- Layanan -->
+                            <div class="space-y-1">
+                                <span class="block text-[11px] text-slate-400 font-medium">Layanan</span>
+                                <div id="dispService" class="font-semibold text-slate-900 leading-snug text-xs">
+                                    Whatsapp Channel Member FP 5 [ Max 20K ] Ultra Fast | No Refill
+                                </div>
+                            </div>
+
+                            <!-- Target URL -->
+                            <div class="space-y-1">
+                                <span class="block text-[11px] text-slate-400 font-medium">Target</span>
+                                <div id="dispTarget" class="font-medium text-brand-600 break-all text-[11px] leading-relaxed">
+                                    https://whatsapp.com/channel/0029Vb8FTo4B4hdKJCRihK3U
+                                </div>
+                            </div>
+
+                            <!-- Detail Grid (Struktur Blok Kuat) -->
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-3 pt-2">
+                                <div class="pb-2 border-b border-slate-100">
+                                    <span class="block text-[11px] text-slate-400 mb-0.5">Jumlah follower</span>
+                                    <span id="dispQuantitySub" class="font-bold text-slate-800 text-xs block">700 Followers</span>
+                                </div>
+
+                                <div class="pb-2 border-b border-slate-100">
+                                    <span class="block text-[11px] text-slate-400 mb-0.5">Status</span>
+                                    <span id="dispStatus" class="font-bold text-emerald-600 text-xs block">
+                                        <i class="fa-solid fa-circle-check text-[10px] mr-0.5"></i> Success
+                                    </span>
+                                </div>
+
+                                <div class="pb-2 border-b border-slate-100">
+                                    <span class="block text-[11px] text-slate-400 mb-0.5">Jumlah awal</span>
+                                    <span id="dispStart" class="font-semibold text-slate-800 text-xs block">0</span>
+                                </div>
+
+                                <div class="pb-2 border-b border-slate-100">
+                                    <span class="block text-[11px] text-slate-400 mb-0.5">Sisa</span>
+                                    <span id="dispRemains" class="font-semibold text-slate-800 text-xs block">0</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Footer Struk -->
+                        <div class="pt-5 pb-1 text-center space-y-1">
+                            <div class="text-brand-600 text-xs font-bold tracking-widest">
+                                ✦ MYFLOW CORPORATE ✦
+                            </div>
+                            <p class="text-[10px] text-slate-400">
+                                Dokumen ringkasan pesanan · Verified System
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-400 text-center max-w-xs mt-4">
+                    Struk diformat khusus dalam rasio portrait presisi untuk dibagikan langsung.
+                </p>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl text-xs font-semibold hidden items-center gap-2.5 z-50">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toastMsg">Struk berhasil diproses!</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Sample Text
+        const sampleText = `Detail Pesanan #5742841
+
+ID Pesanan
+#5742841
+
+Dibuat
+26 Oktober 2026 19:43:41
+
+Layanan
+Whatsapp Channel Member FP 5 [ Max 20K ] Ultra Fast | No Refill
+
+Target
+https://whatsapp.com/channel/0029Vb8FTo4B4hdKJCRihK3U
+
+Jumlah Pesan
+700`;
+
+        // Elements
+        const rawTextEl = document.getElementById('rawText');
+        const btnProcess = document.getElementById('btnProcess');
+        const btnClear = document.getElementById('btnClear');
+        const btnPasteSample = document.getElementById('btnPasteSample');
+        const btnDownload = document.getElementById('btnDownload');
+
+        // Form Inputs
+        const inputOrderId = document.getElementById('inputOrderId');
+        const inputDate = document.getElementById('inputDate');
+        const inputQuantity = document.getElementById('inputQuantity');
+        const inputService = document.getElementById('inputService');
+        const inputTarget = document.getElementById('inputTarget');
+        const inputStart = document.getElementById('inputStart');
+        const inputRemains = document.getElementById('inputRemains');
+        const inputStatus = document.getElementById('inputStatus');
+
+        // Displays
+        const dispOrderId = document.getElementById('dispOrderId');
+        const dispDate = document.getElementById('dispDate');
+        const dispQuantity = document.getElementById('dispQuantity');
+        const dispQuantitySub = document.getElementById('dispQuantitySub');
+        const dispService = document.getElementById('dispService');
+        const dispTarget = document.getElementById('dispTarget');
+        const dispStart = document.getElementById('dispStart');
+        const dispRemains = document.getElementById('dispRemains');
+        const dispStatus = document.getElementById('dispStatus');
+
+        // Toggle Accordion
+        const toggleEdit = document.getElementById('toggleEdit');
+        const editForm = document.getElementById('editForm');
+        const editChevron = document.getElementById('editChevron');
+
+        toggleEdit.addEventListener('click', () => {
+            editForm.classList.toggle('hidden');
+            editChevron.classList.toggle('rotate-180');
+        });
+
+        // Toast Function
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex', 'toast-animate');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 3000);
+        }
+
+        // PARSER CORE LOGIC
+        function parseAndApplyText(text) {
+            if (!text.trim()) {
+                showToast("Teks kosong! Tempelkan teks transaksi.");
+                return;
+            }
+
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            let data = {
+                orderId: '',
+                date: '',
+                service: '',
+                target: '',
+                quantity: '',
+                start: '0',
+                remains: '0',
+                status: 'Success'
+            };
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const lower = line.toLowerCase();
+
+                // Detect Header "Detail Pesanan #..."
+                if (lower.includes('detail pesanan')) {
+                    const match = line.match(/#\d+/);
+                    if (match) data.orderId = match[0];
+                }
+
+                // Detect ID Pesanan
+                if (lower === 'id pesanan' && i + 1 < lines.length) {
+                    data.orderId = lines[i + 1];
+                }
+
+                // Detect Dibuat / Tanggal
+                if ((lower === 'dibuat' || lower === 'tanggal') && i + 1 < lines.length) {
+                    data.date = lines[i + 1];
+                }
+
+                // Detect Layanan
+                if (lower === 'layanan' && i + 1 < lines.length) {
+                    data.service = lines[i + 1];
+                }
+
+                // Detect Target
+                if (lower === 'target' && i + 1 < lines.length) {
+                    data.target = lines[i + 1];
+                }
+
+                // Detect Jumlah Pesan / Followers
+                if ((lower === 'jumlah pesan' || lower === 'jumlah pesanan' || lower === 'jumlah' || lower === 'followers') && i + 1 < lines.length) {
+                    data.quantity = lines[i + 1];
+                }
+
+                // Detect Jumlah Awal
+                if (lower === 'jumlah awal' && i + 1 < lines.length) {
+                    data.start = lines[i + 1];
+                }
+
+                // Detect Sisa
+                if (lower === 'sisa' && i + 1 < lines.length) {
+                    data.remains = lines[i + 1];
+                }
+
+                // Detect Status
+                if (lower === 'status' && i + 1 < lines.length) {
+                    data.status = lines[i + 1];
+                }
+            }
+
+            // Fallbacks
+            if (!data.orderId) {
+                const idMatch = text.match(/#\d+/);
+                data.orderId = idMatch ? idMatch[0] : '#5742841';
+            }
+            if (!data.date) data.date = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'medium' });
+            if (!data.service) data.service = 'Layanan Digital Custom';
+            if (!data.target) data.target = '-';
+            if (!data.quantity) data.quantity = '700';
+
+            // Sync with Inputs
+            inputOrderId.value = data.orderId;
+            inputDate.value = data.date;
+            inputQuantity.value = data.quantity;
+            inputService.value = data.service;
+            inputTarget.value = data.target;
+            inputStart.value = data.start;
+            inputRemains.value = data.remains;
+            inputStatus.value = data.status;
+
+            // Render to Struk UI
+            updateDisplay();
+            showToast("Struk berhasil diperbarui!");
+        }
+
+        // Synchronize display elements with form values
+        function updateDisplay() {
+            dispOrderId.innerText = inputOrderId.value || '#000000';
+            dispDate.innerText = inputDate.value || '-';
+            
+            const qVal = inputQuantity.value || '0';
+            dispQuantity.innerText = qVal;
+            dispQuantitySub.innerText = `${qVal} Followers`;
+
+            dispService.innerText = inputService.value || '-';
+            dispTarget.innerText = inputTarget.value || '-';
+
+            dispStart.innerText = inputStart.value || '0';
+            dispRemains.innerText = inputRemains.value || '0';
+            
+            const stVal = inputStatus.value || 'Success';
+            dispStatus.innerHTML = `<i class="fa-solid fa-circle-check text-[10px] mr-0.5"></i> ${stVal}`;
+        }
+
+        // Live typing synchronization
+        [inputOrderId, inputDate, inputQuantity, inputService, inputTarget, inputStart, inputRemains, inputStatus].forEach(input => {
+            input.addEventListener('input', updateDisplay);
+        });
+
+        // Event Listeners
+        btnProcess.addEventListener('click', () => {
+            parseAndApplyText(rawTextEl.value);
+        });
+
+        // Auto parse when user pastes into textarea
+        rawTextEl.addEventListener('paste', () => {
+            setTimeout(() => {
+                parseAndApplyText(rawTextEl.value);
+            }, 100);
+        });
+
+        btnPasteSample.addEventListener('click', () => {
+            rawTextEl.value = sampleText;
+            parseAndApplyText(sampleText);
+        });
+
+        btnClear.addEventListener('click', () => {
+            rawTextEl.value = '';
+            showToast("Teks dibersihkan.");
+        });
+
+        // ULTRA PRECISE DOWNLOAD PNG (html-to-image ENGINE)
+        btnDownload.addEventListener('click', async () => {
+            const receipt = document.getElementById('receiptContainer');
+            showToast("Generating HD PNG...");
+
+            try {
+                // Ensure fonts loaded first
+                await document.fonts.ready;
+
+                // Render node directly to PNG using html-to-image
+                const dataUrl = await htmlToImage.toPng(receipt, {
+                    pixelRatio: 3, // High resolution scale
+                    cacheBust: true,
+                    style: {
+                        transform: 'scale(1)',
+                        transformOrigin: 'top left'
+                    }
+                });
+
+                const cleanId = (inputOrderId.value || 'receipt').replace(/[^a-zA-Z0-9]/g, '');
+                const link = document.createElement('a');
+                link.download = `MYFLOW_Receipt_${cleanId}.png`;
+                link.href = dataUrl;
+                link.click();
+                
+                showToast("Download Berhasil & Rapi!");
+            } catch (err) {
+                console.error("Download Error: ", err);
+                showToast("Gagal mengunduh gambar.");
+            }
+        });
+
+        // Initial Auto Load Sample
+        window.addEventListener('DOMContentLoaded', () => {
+            rawTextEl.value = sampleText;
+            parseAndApplyText(sampleText);
+        });
+    </script>
+</body>
+</html>
